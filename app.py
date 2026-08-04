@@ -26,13 +26,8 @@ def load_model():
     model.eval()
     return tokenizer, model, device
 
-@st.cache_resource
-def load_vocab():
-    with open("symptom_vocab.json", "r") as f:
-        return set(json.load(f))
-
 tokenizer, model, device = load_model()
-symptom_vocab = load_vocab()
+
 
 # ============================================================
 # SAFETY LISTS
@@ -51,11 +46,44 @@ SELF_HARM_KEYWORDS = [
     "self harm", "self-harm", "harm myself"
 ]
 
-STOPWORDS = {"i", "the", "a", "an", "and", "or", "is", "are", "have", "having",
-             "been", "my", "me", "to", "in", "on", "at", "of", "it", "with",
-             "also", "for", "im", "ive", "youve", "id"}
+SYMPTOM_WHITELIST = {
+    "head", "neck", "back", "chest", "stomach", "abdomen", "throat", "skin",
+    "eye", "eyes", "ear", "ears", "nose", "mouth", "joint", "joints", "knee",
+    "knees", "leg", "legs", "arm", "arms", "hand", "hands", "foot", "feet",
+    "muscle", "muscles", "limb", "limbs", "lung", "lungs", "heart",
+    "liver", "kidney", "bladder", "spine", "shoulder", "hip", "ankle", "wrist",
+    "pain", "ache", "aches", "aching", "achy", "sore", "soreness", "hurt", "hurting",
+    "fever", "chills", "sweating", "sweaty", "nausea", "nauseous", "nauseated",
+    "vomiting", "vomit", "queasy", "clammy",
+    "dizzy", "dizziness", "lightheaded", "faint", "fainting", "woozy",
+    "fatigue", "tired", "tiredness", "exhausted", "exhaustion",
+    "weak", "weakness", "drained", "lethargic", "lethargy",
+    "cough", "coughing", "sneeze", "sneezing", "sniffly", "runny", "stuffy",
+    "hoarse", "wheeze", "wheezing",
+    "rash", "itch", "itchy", "itching",
+    "swelling", "swollen", "puffy", "bloating", "bloated",
+    "cramp", "cramps", "cramping", "spasm", "spasms",
+    "stiff", "stiffness", "burning", "stinging", "throbbing", "pounding",
+    "numb", "numbness", "tingling", "pins",
+    "breathless", "breathing", "congestion", "congested",
+    "diarrhea", "constipation", "constipated",
+    "bleeding", "bruise", "bruising", "blister", "blisters",
+    "headache", "migraine", "cold", "flu", "infection", "inflammation",
+    "discharge", "discomfort", "irritation", "irritated",
+    "spots", "patches", "scaly", "flaky", "dry", "peeling",
+    "red", "redness", "yellow", "yellowish", "jaundice", "pale", "pallor",
+    "thirst", "thirsty", "urination", "urine", "urinate", "urinating",
+    "appetite", "insomnia", "sleepless", "sleepy", "drowsy",
+    "anxious", "restless", "confusion", "confused", "disoriented",
+    "blurry", "blurred", "vision", "hearing", "balance", "coordination",
+    "seizure", "tremor", "shaking", "trembling",
+    "palpitations", "pressure", "tightness", "tight",
+    "cold", "hot", "sweats", "shivering", "shivers",
+    "runny", "blocked", "sinus", "phlegm", "mucus",
+    "bump", "lump", "sting", "cut", "wound", "bloody",
+}
 
-CONFIDENCE_THRESHOLD = 0.5
+CONFIDENCE_THRESHOLD = 0.98
 
 # Diagnosis -> plain "possible concern" phrasing + recommended action
 URGENCY_ACTION_MAP = {
@@ -80,9 +108,9 @@ URGENCY_ACTION_MAP = {
 # HELPER FUNCTIONS
 # ============================================================
 def is_plausible_symptom_text(text, min_overlap=1):
-    words = set(re.findall(r"[a-z]+", text.lower())) - STOPWORDS
+    words = set(re.findall(r"[a-z]+", text.lower())) 
     words = {w for w in words if len(w) > 2}
-    overlap = words & symptom_vocab
+    overlap = words & SYMPTOM_WHITELIST
     return len(overlap) >= min_overlap, overlap
 
 
@@ -94,7 +122,7 @@ def run_model(symptom_text):
 
     output = model.generate(
         **inputs, max_new_tokens=60, do_sample=True, top_p=0.9,
-        temperature=0.4, pad_token_id=tokenizer.eos_token_id,
+        temperature=0.5, pad_token_id=tokenizer.eos_token_id,
         output_scores=True, return_dict_in_generate=True
     )
 
@@ -133,8 +161,7 @@ def triage(symptom_text):
                 "triage_level": "🔴 Immediate Support Needed",
                 "concern": "Your message suggests you may be in emotional distress.",
                 "action": ("Please reach out for support right now:\n\n"
-                           "- Call or text **988** (Suicide & Crisis Lifeline, US)\n"
-                           "- UK: **116 123** (Samaritans)\n"
+                           "- Call or text **112** (Suicide & Crisis Lifeline)\n"
                            "- Or contact your local emergency number"),
                 "reasoning": "Detected language associated with self-harm risk. "
                              "This response is rule-based and intentionally bypasses "
@@ -192,7 +219,7 @@ def triage(symptom_text):
     return {
         "type": "model_result",
         "triage_level": urgency_info["label"],
-        "concern": f"This could possibly indicate **{diagnosis}** (not a definitive diagnosis).",
+        "concern": f"This could possibly indicate **{diagnosis}**.",
         "action": urgency_info["action"],
         "reasoning": f"Based on symptom terms recognized by the model (e.g. {matched_words}), "
                      f"the described pattern most closely resembles cases labeled "
