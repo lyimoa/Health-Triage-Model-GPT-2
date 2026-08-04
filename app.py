@@ -9,7 +9,7 @@ from transformers import GPT2LMHeadModel, GPT2Tokenizer
 # PAGE CONFIG
 # ============================================================
 st.set_page_config(
-    page_title="Care Triage Assistant",
+    page_title="Hospital Triage Assistant",
     page_icon="🏥",
     layout="centered",
 )
@@ -205,7 +205,7 @@ def triage(symptom_text):
 # ============================================================
 # UI
 # ============================================================
-st.title("🏥 Care Triage Assistant")
+st.title("🏥 Hospital Triage Assistant")
 st.caption("Every symptom deserves attention. We're here to help guide your next step.")
 
 st.warning(
@@ -264,8 +264,7 @@ if submitted:
             st.progress(min(result["confidence"], 1.0), text=f"Model confidence: {result['confidence']:.0%}")
 
         st.caption(
-            "This suggestion is generated for educational purposes only and has not been "
-            "clinically validated. Please have a trained professional confirm any assessment."
+            "This suggestion is AI-generated and may contain mistakes. Please have a trained professional confirm any assessment."
         )
 
 # ============================================================
@@ -286,18 +285,20 @@ with st.sidebar:
             st.rerun()
  
     st.markdown("---")
-    st.header("ℹ️ About this tool")
+    st.header("ℹ️ About this Tool")
     st.caption(
         "A GPT-2 model fine-tuned on a small symptom-to-diagnosis dataset "
         "(gretelai/symptom_to_diagnosis) to support triage prioritization. "
         "Rule-based safety layers handle emergencies and self-harm language, "
         "a symptom-plausibility check filters unclear input, and a confidence "
-        "threshold withholds low-certainty suggestions — the model never has "
-        "the final say on high-risk cases."
+        "threshold withholds low-certainty suggestions, the model never has "
+        "the final say on any cases."
     )
  
     st.markdown("**👥 Team**")
-    st.caption("Allen Lyimo · Claverfred Mhidze · Frank Mtimbili")
+    st.caption("- Allen Lyimo")
+    st.caption("- Claverfred Mhidze")
+    st.caption("- Frank Mtimbili")
  
     st.markdown("**🔗 Project Repository**")
     st.markdown("[View on GitHub](https://github.com/lyimoa/Health-Triage-Model-GPT-2.git)")
