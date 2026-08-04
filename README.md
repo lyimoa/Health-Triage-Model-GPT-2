@@ -3,7 +3,7 @@ A GPT-2 model fine-tuned on a small symptom-to-diagnosis dataset (gretelai/sympt
 
 ## ⚠️ Model Files Not Included
 
-This repository does **not** include the fine-tuned model weights (`gpt2-triage-final/`) because the files are too large for GitHub. You have two options to get them:
+This repository does **not** include the fine-tuned model weights (`gpt2-triage-final/`) because the files are too large for GitHub. Follow procedure below to get them:
 
 ### Regenerate the model yourself 
 1. Open `Notebook/Health_Triage_Group_1.ipynb` in Google Colab
