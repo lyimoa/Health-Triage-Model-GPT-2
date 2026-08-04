@@ -15,6 +15,9 @@ This repository does **not** include the fine-tuned model weights (`gpt2-triage-
 4. Unzip it into your local project folder, so the structure looks like:
 
 ├── gpt2-triage-final/ ← place it here
+
 ├── app.py
+
 ├── symptom_vocab.json
+
 └── README.md
