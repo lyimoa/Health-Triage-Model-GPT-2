@@ -300,4 +300,4 @@ with st.sidebar:
     st.caption("Allen Lyimo · Claverfred Mhidze · Frank Mtimbili")
  
     st.markdown("**🔗 Project Repository**")
-    st.markdown("[View on GitHub](https://github.com/your-username/your-repo-name)")
+    st.markdown("[View on GitHub](https://github.com/lyimoa/Health-Triage-Model-GPT-2.git)")
