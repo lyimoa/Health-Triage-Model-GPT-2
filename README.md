@@ -18,8 +18,6 @@ This repository does **not** include the fine-tuned model weights (`gpt2-triage-
 
 ├── app.py
 
-├── symptom_vocab.json
-
 └── README.md
 
 ## For Practising
