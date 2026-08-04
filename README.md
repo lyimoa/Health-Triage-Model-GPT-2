@@ -21,3 +21,10 @@ This repository does **not** include the fine-tuned model weights (`gpt2-triage-
 ├── symptom_vocab.json
 
 └── README.md
+
+## For Practising
+
+- Emergency words: Cannot breathe
+- Urgent words: I have fever and chills (100%)
+- Routine words: I have flu
+- Low confidence words: I have hair and chills (97%)
