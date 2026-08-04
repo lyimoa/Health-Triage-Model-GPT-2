@@ -1,0 +1,6 @@
+gpt2-triage-final/
+__pycache__/
+*.pyc
+.DS_Store
+venv/
+.streamlit/
