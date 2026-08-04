@@ -83,7 +83,7 @@ SYMPTOM_WHITELIST = {
     "bump", "lump", "sting", "cut", "wound", "bloody",
 }
 
-CONFIDENCE_THRESHOLD = 0.98
+CONFIDENCE_THRESHOLD = 0.95
 
 # Diagnosis -> plain "possible concern" phrasing + recommended action
 URGENCY_ACTION_MAP = {
